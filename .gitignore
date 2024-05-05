@@ -1,0 +1,8 @@
+__pycache__
+.vscode
+.ai-storybook-crew
+output_files
+.env
+*.md
+logs.txt
+blogger-crew-google-drive-api.json

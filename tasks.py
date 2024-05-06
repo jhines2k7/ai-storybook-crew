@@ -9,10 +9,8 @@ class AIStoryBookTasks:
         return Task(
             description=textwrap.dedent(
                 """
-                Develop a creative brief for a short fantasy story for male readers between the 
-                ages of 41 and 56 as if it were written by Tyler Durden from the movie Fight Club.
-                The story should be between 1500 and 2000 words. An example creative brief can be found in the 
-                creative_brief_example.md file.
+                Develop a creative brief for a first person short fantasy story for male readers between the ages of 41 and 56. 
+                The story should be between 1500 and 2000 words. An example creative brief can be found in the creative_brief_example.md file.
                 """
             ),
             expected_output=textwrap.dedent(
@@ -33,7 +31,7 @@ class AIStoryBookTasks:
         return Task(
             description=textwrap.dedent(
                 """
-                Write a short story based on the guidelines and requirements outlined in the creative brief.
+                Write a short story based on the guidelines and requirements outlined in the creative_brief.md file.
 
                 Consider consulting or collaborating with the researcher at various stages of the writing process:
 
@@ -50,14 +48,14 @@ class AIStoryBookTasks:
             agent=agent,
             expected_output=textwrap.dedent(
                 """
-                    A concise yet compelling narrative that engages the reader from beginning to end. It should feature well-developed 
-                    characters, a clear setting, and a plot that unfolds naturally within the constraints of the short form.
-                    The story should have a fully developed plot which typically follows a structured format such as exposition, 
-                    rising action, climax, falling action, and resolution. The story should evoke emotion, provoke thought, and 
-                    entertain the reader, leaving a lasting impact despite its brevity.
+                A concise yet compelling narrative that engages the reader from beginning to end. It should feature well-developed 
+                characters, a clear setting, and a plot that unfolds naturally within the constraints of the short form.
+                The story should have a fully developed plot which typically follows a structured format such as exposition, 
+                rising action, climax, falling action, and resolution. Work with the editor and creative director to refine the narrative. 
+                The story should evoke emotion, provoke thought, and entertain the reader, leaving a lasting impact despite its brevity.
                 """
             ),
-            output_file="output_files/story_draft.txt",
+            output_file="output_files/final_draft.txt",
             tools=[
                 FileReadTool(file_path="output_files/creative_brief.md"),
             ],
@@ -80,16 +78,14 @@ class AIStoryBookTasks:
                 character development, a well-paced plot, and compelling prose, ultimately leaving a lasting impression and 
                 eliciting an emotional response from the audience.
                 """
-            ),
-            output_file="output_files/final_draft.txt",
-            tools=[FileReadTool(file_path="output_files/story_draft.txt")]
+            )
         )
 
     def convert_to_json(self, agent, context):        
         return Task(
             description=textwrap.dedent(
                 """
-                1. Convert the markdown from the final draft into html using h3 and p tags. 
+                1. Convert the content from final_draft.txt into html using h3 and p tags. 
                 2. Reformat the html so that it is on one line and be sure to properly escape any double quotes. 
                 3. Create a json file that will be used as data for the api that delivers the story to our readers.                 
                 """
@@ -147,22 +143,25 @@ class AIStoryBookTasks:
         return Task(
             description=textwrap.dedent(
                 """
-                    You will be given a list of image URLs in a text 
-                    file. Crop each image to a width of 
-                    450px and a height of 1100px. 
+                You will be given a list of image URLs in a text 
+                file.
+
+                1. Crop each image to a width of 450px and a height of 1100px  
+                2. Crop each image to a width of 600px and a height of 200px
                 """
             ),
             agent=agent,
             context=context,
             expected_output=textwrap.dedent(
-                """A line separated list of image URLs for the blog post.
+                """
+                A line separated list of image URLs for the story.
                 Example Output:
                     https://storage.googleapis.com/[BUCKET_NAME]/[FILE_NAME_1]
                     https://storage.googleapis.com/[BUCKET_NAME]/[FILE_NAME_2]
                     https://storage.googleapis.com/[BUCKET_NAME]/[FILE_NAME_3]
                     https://storage.googleapis.com/[BUCKET_NAME]/[FILE_NAME_4]            
-            """
+                """
             ),
             tools=[FileReadTool(file_path="output_files/image_urls.txt")],
-            output_file="output_files/cropped_image_urls.txt"
+            output_file="output_files/cropped_image_urls.txt",
         )

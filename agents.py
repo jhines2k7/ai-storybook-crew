@@ -55,8 +55,8 @@ class AIStoryBookAgents():
             allow_delegation=True,
             verbose=True,
             max_iter=15,
-            llm=llama3["llm"],
-            max_rpm=llama3["rpm"],
+            llm=gpt4["llm"],
+            max_rpm=gpt4["rpm"],
         )
 
     def researcher(self):
@@ -84,8 +84,8 @@ class AIStoryBookAgents():
             tools=[ResearchTool.perform_research],
             verbose=True,
             allow_delegation=True,
-            llm=llama3["llm"],
-            max_rpm=llama3["rpm"],
+            llm=gpt4["llm"],
+            max_rpm=gpt4["rpm"],
         )
 
     def fantasy_writer(self):
@@ -122,11 +122,8 @@ class AIStoryBookAgents():
             ),
             verbose=True,
             allow_delegation=True,
-            llm=llama3["llm"],
-            max_rpm=llama3["rpm"],
-            tools=[
-                FileReadTool(file_path="writing_task.md"),
-            ],
+            llm=gpt4["llm"],
+            max_rpm=gpt4["rpm"]
         )
 
     def sci_fi_writer(self):
@@ -182,8 +179,8 @@ class AIStoryBookAgents():
             ),
             verbose=True,
             allow_delegation=True,
-            llm=llama3["llm"],
-            max_rpm=llama3["rpm"],
+            llm=gpt4["llm"],
+            max_rpm=gpt4["rpm"],
         )
 
     def photographer(self):
@@ -261,6 +258,6 @@ class AIStoryBookAgents():
                 """),
             verbose=True,
             allow_delegation=True,            
-            llm=llama3['llm'],
-            max_rpm=llama3['rpm']
+            llm=gpt4['llm'],
+            max_rpm=gpt4['rpm']
         )

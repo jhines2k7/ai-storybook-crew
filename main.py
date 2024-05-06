@@ -24,10 +24,11 @@ claude3 = {"llm": ChatAnthropic(model="claude-3-opus-20240229"), "rpm": 1000}
 gemini = {"llm": ChatGoogleGenerativeAI(model="gemini-pro"), "rpm": 2}
 
 creative_director = agents.creative_director()
-writer = agents.sci_fi_writer()
-# writer = agents.fantasy_writer()
+# writer = agents.sci_fi_writer()
+writer = agents.fantasy_writer()
 editor = agents.editor()
-illustrator = agents.illustrator()
+# illustrator = agents.illustrator()
+photographer = agents.photographer()
 web_developer = agents.web_developer()
 researcher = agents.researcher()
 
@@ -41,31 +42,24 @@ write_story = tasks.write_story(
 edit_story = tasks.edit_story(
     editor, [write_story]
 )
-source_image = tasks.source_image(illustrator, [edit_story])
-crop_images = tasks.crop_images(illustrator, [source_image])
+source_image = tasks.source_image(photographer, [edit_story])
+crop_images = tasks.crop_images(photographer, [source_image])
 convert_to_json = tasks.convert_to_json(web_developer, [edit_story, crop_images])
 
 crew = Crew(
-    agents=[
-        creative_director,
-        writer,
-        editor,
-        illustrator,
-        web_developer,
-        researcher
-    ],
+    agents=[creative_director, writer, editor, photographer, web_developer, researcher],
     tasks=[
         develop_creative_brief,
         write_story,
         edit_story,
         source_image,
         crop_images,
-        convert_to_json        
+        convert_to_json,
     ],
     process=Process.hierarchical,
     verbose=2,
-    manager_llm=gpt4["llm"],
-    max_rpm=gpt4["rpm"],
+    manager_llm=claude3["llm"],
+    max_rpm=claude3["rpm"],
     output_log_file=True,
 )
 

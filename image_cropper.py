@@ -88,9 +88,7 @@ def get_filename_from_url(public_url):
     return filename
 
 if __name__ == "__main__":
-    public_url = (
-        "https://storage.googleapis.com/blogger-crew-images/kael_and_aria_closeup.jpg"
-    )
+    public_url = "https://storage.googleapis.com/blogger-crew-images/cropped/shattered_reflections-800x1200.jpg"
     new_width = 600
     new_height = 200
     cropped_public_url = crop_image(public_url, new_width, new_height)

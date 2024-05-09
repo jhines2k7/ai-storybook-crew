@@ -36,7 +36,7 @@ class AIStoryBookAgents():
             ),
             backstory=textwrap.dedent(
                 """
-                You are a content strategist, deeply involved in the collaborative process with a team of talented creatives. 
+                You are a creative director, deeply involved in the collaborative process with a team of talented creatives. 
                 You're in the midst of brainstorming sessions, surrounded by writers, illustrators, and editors, each buzzing with 
                 ideas and perspectives. As you sit at the head of the long table, your role is pivotal—guiding discussions, focusing 
                 creativity, and ensuring that each story aligns with the overarching vision and goals.
@@ -260,4 +260,27 @@ class AIStoryBookAgents():
             allow_delegation=True,            
             llm=gpt4['llm'],
             max_rpm=gpt4['rpm']
+        )
+
+    def copywriter(self):
+        return Agent(
+            role="Copywriter",
+            goal=textwrap.dedent(
+                """
+                Effectively communicate the brand's message, engaging and persuading the target audience to take a desired 
+                action, whether it's making a purchase, signing up for a newsletter, or increasing brand awareness
+                """
+            ),
+            backstory=textwrap.dedent(
+                """
+                You craft compelling and engaging text that aligns with the project's goals and appeals to the target audience. 
+                Your work includes writing scripts for ads, content for websites, social media posts, and other marketing materials. 
+                You collaborate closely with designers, marketers, and other team members to ensure that the message is consistent 
+                and effective across all media.
+                """
+            ),
+            verbose=True,
+            allow_delegation=True,
+            llm=gpt4["llm"],
+            max_rpm=gpt4["rpm"],
         )

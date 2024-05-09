@@ -3,14 +3,13 @@ from crewai_tools import FileReadTool
 
 import textwrap
 
-
 class AIStoryBookTasks:
     def develop_creative_brief(self, agent):
         return Task(
             description=textwrap.dedent(
                 """
-                Develop a creative brief for a first person short fantasy story for male readers between the ages of 41 and 56. 
-                The story should be between 1500 and 2000 words. An example creative brief can be found in the creative_brief_example.md file.
+                Develop a creative brief for a first person short sci-fi story for male readers between the ages of 41 and 56. 
+                The story should be between 2000 and 3000 words. An example creative brief can be found in the creative_brief_example.md file.
                 """
             ),
             expected_output=textwrap.dedent(

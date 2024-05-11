@@ -1,11 +1,10 @@
 from crewai import Agent
 from tools.research_tool import ResearchTool
-from tools.image_gen_tool import ImageGenTool
-from tools.cropping_tool import CroppingTool
 from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
-from crewai_tools import FileReadTool
+from tools.image_gen_tool import ImageGenTool
+from tools.cropping_tool import CroppingTool
 
 import textwrap
 
@@ -52,11 +51,11 @@ class AIStoryBookAgents():
                 managing tasks but about inspiring your team to push boundaries and create compelling, engaging stories.
                 """
             ),
-            allow_delegation=True,
+            allow_delegation=False,
             verbose=True,
             max_iter=15,
             llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"],
+            max_rpm=gpt4["rpm"]
         )
 
     def researcher(self):
@@ -83,9 +82,9 @@ class AIStoryBookAgents():
             ),
             tools=[ResearchTool.perform_research],
             verbose=True,
-            allow_delegation=True,
+            allow_delegation=False,
             llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"],
+            max_rpm=gpt4["rpm"]
         )
 
     def fantasy_writer(self):
@@ -118,12 +117,15 @@ class AIStoryBookAgents():
                 As a fantasy writer, you are both architect and bard, architect of worlds yet unseen and bard of tales yet untold. 
                 In your hands, the ordinary becomes extraordinary, and the impossible becomes possible, leaving a trail of wonder 
                 in your wake.
+
+                Collaboration with the editor, creative director, seo specialist, social media manager, and researcher will enhance
+                the final product can foster mutual respect and a more collaborative spirit
                 """
             ),
             verbose=True,
-            allow_delegation=True,
+            allow_delegation=False,
             llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"]
+            max_rpm=gpt4["rpm"],
         )
 
     def sci_fi_writer(self):
@@ -149,10 +151,13 @@ class AIStoryBookAgents():
                 crafting tales that provoke thought, inspire wonder, and challenge the very fabric of reality. You're a visionary, 
                 daring to dream what others fear to contemplate, and in your words, you offer glimpses of the infinite possibilities 
                 that lie beyond the horizon of our understanding.
+
+                Collaboration with the editor, creative director, seo specialist, social media manager, and researcher will enhance
+                the final product can foster mutual respect and a more collaborative spirit
                 """
             ),
             verbose=True,
-            allow_delegation=True,
+            allow_delegation=False,
             llm=gpt4["llm"],
             max_rpm=gpt4["rpm"],
         )
@@ -175,12 +180,20 @@ class AIStoryBookAgents():
                 As the silent force behind the scenes, you manage projects seamlessly, ensuring that each story meets its audience 
                 right on time. Your commitment to excellence fuels the team's success, turning their collective vision into 
                 captivating tales that leave readers yearning for more.
+
+                Close collaboration with the writer, copywriter, creative director and social media manager are essential to this role. 
+                Together, you develop strategies that maximize impact and engagement across all platforms. This synergy not only 
+                enhances the stories but also ensures they resonate deeply with their intended audiences. Through your skilled 
+                coordination and keen eye for detail, you create a cohesive narrative that stands out in a crowded media landscape.
+
+                Your role as an editor is not just about perfecting text, but also about shaping the very essence of communication, 
+                making each word count and every story impactful.
                 """
             ),
             verbose=True,
-            allow_delegation=True,
+            allow_delegation=False,
             llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"],
+            max_rpm=gpt4["rpm"]
         )
 
     def photographer(self):
@@ -203,10 +216,13 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=True,
-            tools=[ImageGenTool.generate_image, CroppingTool.crop_image],
+            allow_delegation=False,
             llm=gpt4["llm"],
             max_rpm=gpt4["rpm"],
+            tools=[
+                ImageGenTool.generate_image,
+                CroppingTool.crop_image,
+            ]
         )
 
     def illustrator(self):
@@ -241,10 +257,13 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=True,
-            tools=[ImageGenTool.generate_image, CroppingTool.crop_image],
+            allow_delegation=False,
             llm=gpt4["llm"],
             max_rpm=gpt4["rpm"],
+            tools=[
+                ImageGenTool.generate_image,
+                CroppingTool.crop_image,
+            ]
         )
 
     def web_developer(self):
@@ -257,7 +276,7 @@ class AIStoryBookAgents():
                 Your role is to ensure that the stories are presented online in an engaging and user-friendly manner.
                 """),
             verbose=True,
-            allow_delegation=True,            
+            allow_delegation=False,            
             llm=gpt4['llm'],
             max_rpm=gpt4['rpm']
         )
@@ -273,14 +292,66 @@ class AIStoryBookAgents():
             ),
             backstory=textwrap.dedent(
                 """
-                You craft compelling and engaging text that aligns with the project's goals and appeals to the target audience. 
-                Your work includes writing scripts for ads, content for websites, social media posts, and other marketing materials. 
-                You collaborate closely with designers, marketers, and other team members to ensure that the message is consistent 
-                and effective across all media.
+                You work with the editor, seo specialist, social media manager, and the creative director to craft compelling 
+                and engaging copy that aligns with the project's goals and appeals to the target audience. Your work includes 
+                writing scripts for ads, content for websites, social media posts, and other marketing materials. You collaborate 
+                closely with designers, marketers, and other team members to ensure that the message is consistent and effective 
+                across all media. You are open to feedback and make necessary adjustments to align the content more closely with 
+                the brief and your expectations.
                 """
             ),
             verbose=True,
-            allow_delegation=True,
+            allow_delegation=False,
+            llm=gpt4["llm"],
+            max_rpm=gpt4["rpm"],
+        )
+
+    def seo_specialist(self):
+        return Agent(
+            role="SEOSpecialist",
+            goal=textwrap.dedent(
+                """
+                Optimize existing content and collaborate with the content creation team to develop new SEO-focused articles and 
+                multimedia content that align with targeted keyword strategies and user intent.               
+                """
+            ),
+            backstory=textwrap.dedent(
+                """
+                You are an expert SEO specialist, known for your deep understanding of search engine algorithms and user search 
+                behavior. You work closely with the creative director and writer to optimize web content to not only enhances 
+                visibility but also boosts organic traffic significantly. You adeptly balance technical SEO, from site architecture 
+                to link-building, with creative content strategies that engage and convert. Your insight into SEO trends and your 
+                strategic use of analytics tools allow you to continuously refine tactics, ensuring that your organization stays 
+                ahead in a competitive digital landscape.
+                """
+            ),
+            verbose=True,
+            allow_delegation=False,
+            llm=gpt4["llm"],
+            max_rpm=gpt4["rpm"]
+        )
+
+    def social_media_manager(self):
+        return Agent(
+            role="SocialMediaManager",
+            goal=textwrap.dedent(
+                """
+                You work closely with the creative director, writer, and seo specialist to increase brand awareness and customer 
+                engagement through innovative and relevant content across all social media platforms. Additionally, you aim to grow 
+                the company's social media followers and enhance interaction rates to directly support the broader marketing objectives.
+                """
+            ),
+            backstory=textwrap.dedent(
+                """
+                As a social media manager, you are the voice of your company across various social platforms. Your days are filled with 
+                crafting engaging content, analyzing social media metrics, and responding to followers' comments and messages. You stay 
+                up-to-date with the latest digital trends and adjust strategies to ensure maximum engagement. Your expertise in social 
+                media tools and your keen sense of branding make you pivotal in shaping the company's online presence and connecting 
+                with its audience.
+                """
+            ),
+            verbose=True,
+            allow_delegation=False,
             llm=gpt4["llm"],
             max_rpm=gpt4["rpm"],
         )

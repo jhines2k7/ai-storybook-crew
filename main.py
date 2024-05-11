@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Initialize the agents and tasks
 agents = AIStoryBookAgents()
 tasks = AIStoryBookTasks()
 
@@ -24,37 +23,61 @@ claude3 = {"llm": ChatAnthropic(model="claude-3-opus-20240229"), "rpm": 1000}
 gemini = {"llm": ChatGoogleGenerativeAI(model="gemini-pro"), "rpm": 2}
 
 creative_director = agents.creative_director()
-writer = agents.sci_fi_writer()
-# writer = agents.fantasy_writer()
+# writer = agents.sci_fi_writer()
+writer = agents.fantasy_writer()
 editor = agents.editor()
 # visual_artist = agents.illustrator()
 visual_artist = agents.photographer()
 web_developer = agents.web_developer()
 researcher = agents.researcher()
+copywriter = agents.copywriter()
+seo_specialist = agents.seo_specialist()
+social_media_manager = agents.social_media_manager()
 
 develop_creative_brief = tasks.develop_creative_brief(
     creative_director
 )
+create_seo_brief = tasks.create_seo_brief(seo_specialist, [develop_creative_brief])
+develop_social_media_plan = tasks.develop_social_media_plan(
+    social_media_manager, 
+    [develop_creative_brief, create_seo_brief]
+)
+write_ad_copy = tasks.write_ad_copy(
+    copywriter, [develop_creative_brief, create_seo_brief]
+)
+write_social_media_posts = tasks.write_social_media_posts(
+    copywriter, [develop_social_media_plan, create_seo_brief]
+)
 write_story = tasks.write_story(
     writer,
-    [develop_creative_brief]
+    [develop_creative_brief, create_seo_brief, write_ad_copy]
 )
-edit_story = tasks.edit_story(
-    editor, [write_story]
-)
-source_image = tasks.source_image(visual_artist, [edit_story])
+# edit_story = tasks.edit_story(
+#     editor, [write_story]
+# )
+source_image = tasks.source_image(visual_artist, [write_story])
 crop_images = tasks.crop_images(visual_artist, [source_image])
-convert_to_json = tasks.convert_to_json(web_developer, [edit_story, crop_images])
+convert_to_json = tasks.convert_to_json(web_developer, [write_story, crop_images])
 
 crew = Crew(
-    agents=[creative_director, writer, editor, visual_artist, web_developer, researcher],
-    tasks=[
-        develop_creative_brief,
-        write_story,
-        edit_story,
-        source_image,
-        crop_images,
-        convert_to_json
+    agents=[creative_director, 
+            seo_specialist,
+            copywriter,
+            social_media_manager,
+            writer, 
+            editor, 
+            visual_artist, 
+            web_developer, 
+            researcher],
+    tasks=[develop_creative_brief,
+            create_seo_brief,
+            develop_social_media_plan,
+            write_ad_copy,
+            write_social_media_posts,
+            write_story,
+            source_image,
+            crop_images,
+            convert_to_json
     ],
     process=Process.hierarchical,
     verbose=2,

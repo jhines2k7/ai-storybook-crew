@@ -45,6 +45,8 @@ class CroppingTool():
             # Upload the cropped image to the bucket
             cropped_public_url = CroppingTool().upload_to_gcs(bucket_name, destination_blob_name, img_data)
 
+            print(f"cropped_public_url: {cropped_public_url}")
+
             return cropped_public_url
 
     @staticmethod

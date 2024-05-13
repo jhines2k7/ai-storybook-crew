@@ -35,9 +35,16 @@ seo_specialist = agents.seo_specialist()
 social_media_manager = agents.social_media_manager()
 
 product_name = "Shrimp Up Aquatics Mixed Color Neocaridina Shrimp"
+description = f"""
+                We are embarking on an ad campaign for {product_name} targeted at male readers between the ages of 41 and 56. 
+                I would like you to take the lead in developing the creative brief for this project. I want this campaign to 
+                have a distinctly science fiction feel, with a focus on adventure and exploration. The brief should comprehensively 
+                outline our objectives, the target audience, the tone, and the key messages. Work with the researcher to gather any 
+                necessary insights.
+                """
 develop_creative_brief = tasks.develop_creative_brief(
     creative_director,
-    product_name.title()
+    description
 )
 create_seo_brief = tasks.create_seo_brief(seo_specialist, [develop_creative_brief])
 develop_social_media_plan = tasks.develop_social_media_plan(

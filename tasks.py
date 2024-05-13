@@ -4,16 +4,10 @@ from crewai_tools import FileReadTool
 import textwrap
 
 class AIStoryBookTasks:
-    def develop_creative_brief(self, agent, product_name):
+    def develop_creative_brief(self, agent, description):
         return Task(
             description=textwrap.dedent(
-                f"""
-                We are embarking on an ad campaign for {product_name} targeted at male readers between the ages of 41 and 56. 
-                I would like you to take the lead in developing the creative brief for this project. I want this campaign to 
-                have a distinctly science fiction feel, with a focus on adventure and exploration. The brief should comprehensively 
-                outline our objectives, the target audience, the tone, and the key messages. Work with the researcher to gather any 
-                necessary insights.
-                """
+                description
             ),
             expected_output=textwrap.dedent(
                 """

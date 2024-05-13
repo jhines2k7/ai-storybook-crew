@@ -5,6 +5,7 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from tools.image_gen_tool import ImageGenTool
 from tools.cropping_tool import CroppingTool
+from tools.bundle_tool import BundleTool
 
 import textwrap
 
@@ -54,8 +55,8 @@ class AIStoryBookAgents():
             allow_delegation=False,
             verbose=True,
             max_iter=15,
-            llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"]
+            llm=llama3["llm"],
+            max_rpm=llama3["rpm"]
         )
 
     def researcher(self):
@@ -124,8 +125,8 @@ class AIStoryBookAgents():
             ),
             verbose=True,
             allow_delegation=False,
-            llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"],
+            llm=llama3["llm"],
+            max_rpm=llama3["rpm"],
         )
 
     def sci_fi_writer(self):
@@ -158,8 +159,8 @@ class AIStoryBookAgents():
             ),
             verbose=True,
             allow_delegation=False,
-            llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"],
+            llm=llama3["llm"],
+            max_rpm=llama3["rpm"],
         )
 
     def editor(self):
@@ -192,8 +193,8 @@ class AIStoryBookAgents():
             ),
             verbose=True,
             allow_delegation=False,
-            llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"]
+            llm=llama3["llm"],
+            max_rpm=llama3["rpm"]
         )
 
     def photographer(self):
@@ -268,17 +269,19 @@ class AIStoryBookAgents():
 
     def web_developer(self):
         return Agent(
-            role='WebDeveloper',
-            goal='Handle the technical aspects of posting the content online',
+            role="WebDeveloper",
+            goal="Handle the technical aspects of posting the content online",
             backstory=textwrap.dedent(
                 """
                 With expertise in web technologies, you are the bridge between the creative team and the digital world.
                 Your role is to ensure that the stories are presented online in an engaging and user-friendly manner.
-                """),
+                """
+            ),
             verbose=True,
-            allow_delegation=False,            
-            llm=gpt4['llm'],
-            max_rpm=gpt4['rpm']
+            allow_delegation=False,
+            llm=gpt4["llm"],
+            max_rpm=gpt4["rpm"],
+            tools=[BundleTool()]
         )
 
     def copywriter(self):
@@ -302,8 +305,8 @@ class AIStoryBookAgents():
             ),
             verbose=True,
             allow_delegation=False,
-            llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"],
+            llm=llama3["llm"],
+            max_rpm=llama3["rpm"],
         )
 
     def seo_specialist(self):
@@ -327,8 +330,8 @@ class AIStoryBookAgents():
             ),
             verbose=True,
             allow_delegation=False,
-            llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"]
+            llm=llama3["llm"],
+            max_rpm=llama3["rpm"]
         )
 
     def social_media_manager(self):
@@ -352,6 +355,6 @@ class AIStoryBookAgents():
             ),
             verbose=True,
             allow_delegation=False,
-            llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"],
+            llm=llama3["llm"],
+            max_rpm=llama3["rpm"],
         )

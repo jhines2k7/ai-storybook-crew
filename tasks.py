@@ -133,7 +133,7 @@ class AIStoryBookTasks:
         return Task(
             description=textwrap.dedent(
                 """
-                Combine the results from the team into a single json file. Do not alter the content. The
+                Use the bundle tool to summarize the results from the team into a single json file. Do not alter the content. The
                 unaltered results from bundle tool should be saved to a json file.
                 """
             ),

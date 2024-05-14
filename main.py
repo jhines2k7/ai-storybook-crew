@@ -18,13 +18,15 @@ llama3 = {"llm": ChatGroq(model="llama3-70b-8192"), "rpm": 30}
 
 gpt4 = {"llm": ChatOpenAI(model="gpt-4-turbo"), "rpm": 10000}
 
+gpt4o = {"llm": ChatOpenAI(model="gpt-4o", tiktoken_model_name="gpt-3.5-turbo"), "rpm": 10000}
+
 claude3 = {"llm": ChatAnthropic(model="claude-3-opus-20240229"), "rpm": 1000}
 
 gemini = {"llm": ChatGoogleGenerativeAI(model="gemini-pro"), "rpm": 2}
 
 creative_director = agents.creative_director()
-writer = agents.sci_fi_writer()
-# writer = agents.fantasy_writer()
+# writer = agents.sci_fi_writer()
+writer = agents.fantasy_writer()
 editor = agents.editor()
 # visual_artist = agents.illustrator()
 visual_artist = agents.photographer()
@@ -34,11 +36,11 @@ copywriter = agents.copywriter()
 seo_specialist = agents.seo_specialist()
 social_media_manager = agents.social_media_manager()
 
-product_name = "Shrimp Up Aquatics Mixed Color Neocaridina Shrimp"
+product_name = "Angry Orange Pet Odor Eliminator"
 description = f"""
                 We are embarking on an ad campaign for {product_name} targeted at male readers between the ages of 41 and 56. 
                 I would like you to take the lead in developing the creative brief for this project. I want this campaign to 
-                have a distinctly science fiction feel, with a focus on adventure and exploration. The brief should comprehensively 
+                have a distinctly high fantasy feel, with a focus on mystery, and suspense. The brief should comprehensively 
                 outline our objectives, the target audience, the tone, and the key messages. Work with the researcher to gather any 
                 necessary insights.
                 """

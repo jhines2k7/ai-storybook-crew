@@ -15,6 +15,7 @@ class ImageGenTool():
             Useful for creating professional images for a short story
             Uploads the image to Google Cloud Storage from a base64 encoded string and filename.
         """
+        print(f"Prompt: {prompt}")
         response = client.images.generate(
             model="dall-e-3",
             prompt=prompt,

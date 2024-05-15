@@ -19,6 +19,11 @@ gpt4 = {
     "rpm": 10000
 } 
 
+gpt4o = {
+    "llm": ChatOpenAI(model_name="gpt-4o", tiktoken_model_name="gpt-3.5-turbo"),
+    "rpm": 10000,
+}
+
 claude3 = {
     "llm": ChatAnthropic(model="claude-3-opus-20240229"),
     "rpm": 1000
@@ -214,6 +219,15 @@ class AIStoryBookAgents():
                 composition, and emotion to create visual symphonies that stir the soul. With each snap, you etch your 
                 vision onto film or sensor, preserving memories, evoking emotions, and leaving a trail of artistry in 
                 your wake. You are the photographer, a silent storyteller in a world of fleeting moments.
+                
+                When crafting your prompts, you are sure to always use the following strategies:
+                1. Use Specific Photographic Terms: Use terms like "digital photograph," "golden hour," and "DSLR photo," along with a specific lens type "Sigma 85 mm f/1.4"
+                
+                2. Give Detailed Descriptions: The prompt should provide a detailed description of the scene, including lighting conditions, composition, and mood
+
+                3. Emulate Reality and Medium: Emulate both the reality of the scene and the medium of photography by specifying the time of day, lighting conditions, and the effect of the lens on the image
+
+                4. Avoid Ambiguity: Avoid ambiguity by being specific about the scene's elements, their arrangement, and the desired photographic effects
                 """
             ),
             verbose=True,
@@ -223,7 +237,7 @@ class AIStoryBookAgents():
             tools=[
                 ImageGenTool.generate_image,
                 CroppingTool.crop_image,
-            ]
+            ],
         )
 
     def illustrator(self):

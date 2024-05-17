@@ -3,6 +3,7 @@ from tools.research_tool import ResearchTool
 from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
+from langchain_google_genai import ChatGoogleGenerativeAI
 from tools.image_gen_tool import ImageGenTool
 from tools.cropping_tool import CroppingTool
 from tools.bundle_tool import BundleTool
@@ -28,6 +29,8 @@ claude3 = {
     "llm": ChatAnthropic(model="claude-3-opus-20240229"),
     "rpm": 1000
 }
+
+gemini = {"llm": ChatGoogleGenerativeAI(model="gemini-1.5-pro-latest"), "rpm": 360}
 
 class AIStoryBookAgents():
     def creative_director(self):

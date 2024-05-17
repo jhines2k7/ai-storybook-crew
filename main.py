@@ -22,7 +22,7 @@ gpt4o = {"llm": ChatOpenAI(model="gpt-4o", tiktoken_model_name="gpt-3.5-turbo"),
 
 claude3 = {"llm": ChatAnthropic(model="claude-3-opus-20240229"), "rpm": 1000}
 
-gemini = {"llm": ChatGoogleGenerativeAI(model="gemini-pro"), "rpm": 2}
+gemini = {"llm": ChatGoogleGenerativeAI(model="gemini-1.5-pro-latest"), "rpm": 360}
 
 creative_director = agents.creative_director()
 # writer = agents.sci_fi_writer()
@@ -36,11 +36,11 @@ copywriter = agents.copywriter()
 seo_specialist = agents.seo_specialist()
 social_media_manager = agents.social_media_manager()
 
-product_name = "Angry Orange Pet Odor Eliminator"
+product_name = "Tractive GPS Tracker & Health Monitoring for Dogs"
 description = f"""
                 We are embarking on an ad campaign for {product_name} targeted at male readers between the ages of 41 and 56. 
                 I would like you to take the lead in developing the creative brief for this project. I want this campaign to 
-                have a distinctly high fantasy feel, with a focus on mystery, and suspense. The brief should comprehensively 
+                have a distinctly science fiction feel, with a focus on action and adventure. The brief should comprehensively 
                 outline our objectives, the target audience, the tone, and the key messages. Work with the researcher to gather any 
                 necessary insights.
                 """

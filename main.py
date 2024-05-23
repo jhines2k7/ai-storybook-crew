@@ -18,7 +18,7 @@ llama3 = {"llm": ChatGroq(model="llama3-70b-8192"), "rpm": 30}
 
 gpt4 = {"llm": ChatOpenAI(model="gpt-4-turbo"), "rpm": 10000}
 
-gpt4o = {"llm": ChatOpenAI(model="gpt-4o", tiktoken_model_name="gpt-3.5-turbo"), "rpm": 10000}
+gpt4o = {"llm": ChatOpenAI(model="gpt-4o"), "rpm": 10000}
 
 claude3 = {"llm": ChatAnthropic(model="claude-3-opus-20240229"), "rpm": 1000}
 
@@ -28,19 +28,18 @@ creative_director = agents.creative_director()
 # writer = agents.sci_fi_writer()
 writer = agents.fantasy_writer()
 editor = agents.editor()
-# visual_artist = agents.illustrator()
-visual_artist = agents.photographer()
 web_developer = agents.web_developer()
 researcher = agents.researcher()
 copywriter = agents.copywriter()
 seo_specialist = agents.seo_specialist()
 social_media_manager = agents.social_media_manager()
+art_director = agents.art_director()
 
-product_name = "Tractive GPS Tracker & Health Monitoring for Dogs"
+product_name = "Potaroma Cat Toys Flapping Bird"
 description = f"""
                 We are embarking on an ad campaign for {product_name} targeted at male readers between the ages of 41 and 56. 
                 I would like you to take the lead in developing the creative brief for this project. I want this campaign to 
-                have a distinctly science fiction feel, with a focus on action and adventure. The brief should comprehensively 
+                have a distinctly high fantasy feel, with a focus on action and adventure. The brief should comprehensively 
                 outline our objectives, the target audience, the tone, and the key messages. Work with the researcher to gather any 
                 necessary insights.
                 """
@@ -63,13 +62,14 @@ write_story = tasks.write_story(
     writer,
     [develop_creative_brief, create_seo_brief, write_ad_copy]
 )
-# edit_story = tasks.edit_story(
-#     editor, [write_story]
+# generate_prompt_from_story = tasks.generate_prompt_from_story(
+#     art_director, [write_story]
 # )
-source_image = tasks.source_image(visual_artist, [write_story])
-crop_images = tasks.crop_images(visual_artist, [source_image])
-convert_to_json = tasks.bundle_crew_results(
-    web_developer, [write_story, crop_images]
+# generate_prompt_from_ad_copy = tasks.generate_prompt_from_ad_copy(
+#     art_director, [write_ad_copy]
+# )
+convert_to_html = tasks.convert_to_html(
+    web_developer, [write_story]
 )
 
 crew = Crew(
@@ -80,7 +80,6 @@ crew = Crew(
         social_media_manager,
         writer,
         editor,
-        visual_artist,
         web_developer,
         researcher,
     ],
@@ -91,14 +90,14 @@ crew = Crew(
         write_ad_copy,
         write_social_media_posts,
         write_story,
-        source_image,
-        crop_images,
-        convert_to_json,
+        convert_to_html,
+        # generate_prompt_from_story,
+        # generate_prompt_from_ad_copy
     ],
     process=Process.hierarchical,
     verbose=2,
-    manager_llm=gpt4["llm"],
-    max_rpm=gpt4["rpm"],
+    manager_llm=gpt4o["llm"],
+    max_rpm=gpt4o["rpm"],
     output_log_file=True,
 )
 

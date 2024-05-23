@@ -127,24 +127,32 @@ class AIStoryBookTasks:
                 FileReadTool(file_path="output_files/seo_brief.md"),
                 FileReadTool(file_path="output_files/creative_brief.md"),
             ],
+            llm_config={
+                "temperature": 0.9,  # High creativity
+                "top_p": 0.9,  # Nucleus sampling
+                "frequency_penalty": 0.5,  # Reduce repetition
+                "presence_penalty": 0.6,  # Encourage new topics
+            }
         )
 
-    def bundle_crew_results(self, agent, context):        
+    def convert_to_html(self, agent, context):        
         return Task(
             description=textwrap.dedent(
                 """
-                Use the bundle tool to summarize the results from the team into a single json file. Do not alter the content. The
-                unaltered results from bundle tool should be saved to a json file.
+                Convert the contents of the story markdown file into an HTML file for easy reading and sharing.
                 """
             ),
             agent=agent,
             context=context,
             expected_output=textwrap.dedent(
                 """
-                A json file containing the unaltered results from the bundle tool.
+                An html file containing a fragment of markup that contains the story.
                 """
             ),
-            output_file="output_files/story.json"
+            tools=[
+                FileReadTool(file_path="output_files/story.md")
+            ],
+            output_file="output_files/story.html"
         )
 
     def source_image(self, agent, context):
@@ -261,4 +269,63 @@ class AIStoryBookTasks:
             async_execution=True,
             output_file="output_files/social_media_plan.md",
             tools=[FileReadTool(file_path="output_files/creative_brief.md")]
+        )
+    def generate_prompt_from_ad_copy(self, agent, context=None):
+        return Task(
+            description=textwrap.dedent(
+                """
+                Read the ad copy to fully understand the product, target audience, and key messages. Collaborate with the copywriter and creative director 
+                to ensure alignment with the campaign's objectives and tone. Use the information in the creative brief to generate a prompt that captures the essence 
+                of the ad copy and encourages the reader to take action. The choice of style is up to you.
+                """
+            ),
+            agent=agent,
+            # context=context,
+            expected_output=textwrap.dedent(
+                """
+                A prompt that captures the essence of the ad copy and encourages the reader to take action.
+                """
+            ),
+            output_file="output_files/midjourney_ad_copy_prompt.txt",
+            tools=[
+                FileReadTool(file_path="output_files/ad_copy.txt"),
+                FileReadTool(file_path="output_files/creative_brief.md"),
+                FileReadTool(file_path="midjourney_docs.md")
+            ],
+            llm_config={
+                "temperature": 0.9,  # High creativity
+                "top_p": 0.9,  # Nucleus sampling
+                "frequency_penalty": 0.5,  # Reduce repetition
+                "presence_penalty": 0.6,  # Encourage new topics
+            }
+        )
+    def generate_prompt_from_story(self, agent, context=None):
+        # Read the story to fully understand its themes, characters, and settings to capture
+        # key moments or emotions from the text. Collaborate with the writer and creative director
+        # to ensure alignment with the story's tone and to provide a visual entry point that deepens the
+        # reader's connection to the story. Use the information in the midjourney_docs.md file to
+        # generate a midjourney prompt that captures the essence of the story and engages the reader's curiosity.
+        # The choice of style is up to you.
+
+        return Task(
+            description=textwrap.dedent(
+                """
+                Read the story to fully understand its themes, characters, and settings to capture 
+                key moments or emotions from the text. 
+                Refer to the information in the midjourney-docs.md file to generate a prompt that captures the essence of this 
+                story. Be sure to use the appropriate parameters necessary to acheive the desired effects.                
+                """
+            ),
+            agent=agent,
+            # context=context,
+            expected_output=textwrap.dedent(
+                """
+                A midjourney prompt that captures the essence of the story and engages the reader's curiosity
+                """
+            ),
+            output_file="output_files/midjourney_story_prompt.txt",
+            tools=[
+                FileReadTool(file_path="output_files/story.md"),
+                FileReadTool(file_path="output_files/midjourney-docs.md")
+            ],
         )

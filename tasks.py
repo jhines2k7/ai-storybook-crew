@@ -1,5 +1,5 @@
 from crewai import Task
-from crewai_tools import FileReadTool
+from crewai_tools import FileReadTool, DirectoryReadTool
 
 import textwrap
 
@@ -26,6 +26,26 @@ class AIStoryBookTasks:
             ),
             agent=agent,
             output_file="output_files/creative_brief.md",
+        )
+
+    def review_creative_brief(self, agent):
+        return Task(
+            description=textwrap.dedent(
+                """
+                Review the creative brief to make sure you understand the project's background, objectives,
+                target audience, key messages, and tone. If you have any questions or need clarification,
+                please reach out to the creative director for further guidance.
+                """
+            ),
+            agent=agent,
+            expected_output=textwrap.dedent(
+                """
+                An affirmation that you have reviewed the creative brief and are ready to proceed with your next task.
+                """
+            ),
+            tools=[
+                FileReadTool(file_path="output_files/creative_brief.md")
+            ]
         )
 
     def write_ad_copy(self, agent, context):
@@ -58,7 +78,6 @@ class AIStoryBookTasks:
             async_execution=True,
             output_file="output_files/ad_copy.txt",
             tools=[
-                FileReadTool(file_path="output_files/creative_brief.md"),
                 FileReadTool(file_path="output_files/seo_brief.md")
             ]
         )
@@ -92,17 +111,21 @@ class AIStoryBookTasks:
             ]
         )
 
-    def write_story(self, agent, context):
+    def write_story(self, agent, context=None):
         return Task(
             description=textwrap.dedent(
                 """
-                Write a short story between 5000 and 6000 words based on the ad copy from the copywriter and the seo brief from the seo specialist.
+                Write a short story between 5000 and 6000 words based on the creative brief and the seo brief in the output_files directory.
                 It should feature well-developed characters, a clear setting, and a fully developed plot that unfolds naturally within the constraints of 
-                the short form. Work with the editor and creative director to refine the narrative.
+                the short form. Work with the editor to refine the narrative of the story. There is no need to edit the creative brief
+                or the seo brief. It is up to you to decide how to incorporate the information from the briefs into the story. Be creative and
+                have fun with it. The creative brief and seo brief are there to guide you, not restrict you.
                 Break the story into sections or chapters to make it easier to read and digest.
-                It should also incorporate elements of the ad copy and seo brief to ensure alignment with the campaign's messaging and objectives.
+                It should also incorporate elements of the seo brief to ensure alignment with the campaign's messaging and objectives.
                 The story should evoke emotion, provoke thought, and entertain the reader, leaving a lasting impact despite its brevity.
-                Consider consulting or collaborating with the researcher, seo specialist, editor, and copywriter at various stages of the writing process:
+                Be sure to follow the recommendations in the seo brief to optimize the story for search engines paying close attention to 
+                the suggested keyword density and header tags. Each primary keyword must appear at least once in the story.
+                Consider consulting or collaborating with the researcher, seo specialist, or editor at the various stages of the writing process:
 
                 1. **Concept Development:** When developing the initial concept for a story, especially if it involves complex scientific or technological elements, consulting a researcher can provide valuable insights and ensure accuracy in portraying scientific concepts.
 
@@ -121,30 +144,33 @@ class AIStoryBookTasks:
                 formatting to enhance readability.
                 """
             ),
-            output_file="output_files/story.md",
-            tools=[
-                FileReadTool(file_path="output_files/ad_copy.txt"),
-                FileReadTool(file_path="output_files/seo_brief.md"),
-                FileReadTool(file_path="output_files/creative_brief.md"),
-            ],
+            output_file="output_files/story.md",           
+            llm_config={
+                "temperature": 0.9,  # High creativity
+                "top_p": 0.9,  # Nucleus sampling
+                "frequency_penalty": 0.5,  # Reduce repetition
+                "presence_penalty": 0.6,  # Encourage new topics
+            },
         )
 
-    def bundle_crew_results(self, agent, context):        
+    def convert_to_html(self, agent, context=None):        
         return Task(
             description=textwrap.dedent(
                 """
-                Use the bundle tool to summarize the results from the team into a single json file. Do not alter the content. The
-                unaltered results from bundle tool should be saved to a json file.
+                Convert the contents of the story markdown file into an HTML fragment. Be sure to escape any double quotes.
                 """
             ),
             agent=agent,
             context=context,
             expected_output=textwrap.dedent(
                 """
-                A json file containing the unaltered results from the bundle tool.
+                An html fragment on a single line.
                 """
             ),
-            output_file="output_files/story.json"
+            tools=[
+                FileReadTool(file_path="output_files/story.md")
+            ],
+            output_file="output_files/story.html"
         )
 
     def source_image(self, agent, context):
@@ -209,8 +235,11 @@ class AIStoryBookTasks:
         return Task(
             description=textwrap.dedent(
                 """
-                Create an SEO brief for an upcoming product launch campaign, outlining targeted keywords, content recommendations, 
-                and backlink strategies to ensure maximum visibility and engagement on search engines.
+                Start by affirming that you understand the project's background, objectives, target audience, key messages, and tone 
+                from the creative brief.
+                You'll be given a list of keywords in a text file called keywords.txt.
+                Create an SEO brief for an upcoming product launch campaign, outlining the targeted keywords from the keywords.txt file, 
+                content recommendations, and backlink strategies to ensure maximum visibility and engagement on search engines.
                 """
             ),
             agent=agent,
@@ -218,7 +247,7 @@ class AIStoryBookTasks:
             expected_output=textwrap.dedent(
                 """
                 An SEO content brief which includes:
-                    Target Keywords: Specific primary and secondary keywords that the content should rank for.
+                    Target Keywords: Specific primary and secondary keywords that the content should rank for. 
                     Keyword Density: Recommendations on how frequently keywords should appear in the content.
                     SEO Title: The suggested title that includes the primary keyword.
                     Meta Description: A pre-written meta description that includes primary keywords and is designed to encourage clicks.
@@ -232,14 +261,39 @@ class AIStoryBookTasks:
                 Please list at least 4 external links to include in the external linking section of your SEO brief.
                 """
             ),
-            async_execution=True,
             output_file="output_files/seo_brief.md",
-            tools=[FileReadTool(file_path="output_files/creative_brief.md")]
+            tools=[
+                FileReadTool(file_path="seo/keywords.txt"),
+            ],
         )
 
-    def develop_social_media_plan(self, agent, context):
+    def review_seo_brief(self, agent):
         return Task(
-            description="""Plan the promotion of content on X, Instagram, and Facebook. Collaborate with the creative team to ensure consistency across platforms.""",
+            description=textwrap.dedent(
+                """
+                Review the SEO brief to ensure you understand the targeted keywords, content recommendations, and backlink strategies. 
+                If you have any questions or need clarification, please reach out to the SEO specialist for further guidance.
+                """
+            ),
+            agent=agent,
+            expected_output=textwrap.dedent(
+                """
+                An affirmation that you have reviewed the SEO brief and are ready to proceed with your next task.
+                """
+            ),
+            tools=[
+                FileReadTool(file_path="output_files/seo_brief.md")
+            ]
+        )
+
+    def develop_social_media_plan(self, agent, context=None):
+        return Task(
+            # Plan the promotion of content on X, Instagram, and Facebook. Collaborate with the creative team to ensure consistency across platforms.
+            description=textwrap.dedent(
+                """
+                Plan the promotion of content on X, Instagram, and Facebook.
+                """
+            ),
             agent=agent,
             context=context,
             expected_output=textwrap.dedent(
@@ -258,7 +312,64 @@ class AIStoryBookTasks:
                     - Post 2: {Instagram post content}\\n\\n
                 """
             ),
-            async_execution=True,
+            async_execution=False,
             output_file="output_files/social_media_plan.md",
             tools=[FileReadTool(file_path="output_files/creative_brief.md")]
+        )
+
+    
+    def generate_prompt_from_ad_copy(self, agent, context=None):
+        return Task(
+            description=textwrap.dedent(
+                """
+                Read the ad copy to fully understand the product, target audience, and key messages. Collaborate with the copywriter and creative director 
+                to ensure alignment with the campaign's objectives and tone. Use the information in the creative brief to generate a prompt that captures the essence 
+                of the ad copy and encourages the reader to take action. The choice of style is up to you.
+                """
+            ),
+            agent=agent,
+            context=context,
+            expected_output=textwrap.dedent(
+                """
+                A prompt that captures the essence of the ad copy and encourages the reader to take action.
+                """
+            ),
+            output_file="output_files/midjourney_ad_copy_prompt.txt",
+            tools=[
+                FileReadTool(file_path="output_files/ad_copy.txt"),
+                FileReadTool(file_path="output_files/creative_brief.md"),
+                FileReadTool(file_path="midjourney_docs.md")
+            ],
+            llm_config={
+                "temperature": 0.9,  # High creativity
+                "top_p": 0.9,  # Nucleus sampling
+                "frequency_penalty": 0.5,  # Reduce repetition
+                "presence_penalty": 0.6,  # Encourage new topics
+            }
+        )
+    def generate_prompt_from_story(self, agent, context=None, aspect_ratio="9:22"):
+        return Task(
+            description=textwrap.dedent(
+                f"""
+                Read the story to fully understand its themes, characters, and settings to capture
+                key moments or emotions from the text. Collaborate with the writer and creative director
+                to ensure alignment with the story's tone and to provide a visual entry point that deepens the
+                reader's connection to the story. Use the information in the midjourney_docs.md file to
+                generate a midjourney prompt that captures the essence of the story and engages the reader's curiosity.
+                The choice of style is up to you.
+                Refer to the information in the midjourney-docs.md file to generate a prompt that captures the essence of this 
+                story. Be sure to use the appropriate parameters necessary to achieve the desired effects. Use only parameters
+                listed in the documentation, do not invent new parameters. 
+                Use version 6 unless otherwise specified and use an aspect ratio of {aspect_ratio}.         
+                """
+            ),
+            agent=agent,
+            context=context,
+            expected_output=textwrap.dedent(
+                """
+                A midjourney prompt that captures the essence of the story and engages the reader's curiosity
+                """
+            ),
+            output_file="output_files/midjourney_story_prompt.txt",
+            tools=[FileReadTool(file_path="output_files/story.md")],
         )

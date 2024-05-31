@@ -3,9 +3,10 @@ from tools.research_tool import ResearchTool
 from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
+from langchain_google_genai import ChatGoogleGenerativeAI
 from tools.image_gen_tool import ImageGenTool
 from tools.cropping_tool import CroppingTool
-from tools.bundle_tool import BundleTool
+from crewai_tools import FileReadTool
 
 import textwrap
 
@@ -20,14 +21,16 @@ gpt4 = {
 } 
 
 gpt4o = {
-    "llm": ChatOpenAI(model_name="gpt-4o", tiktoken_model_name="gpt-3.5-turbo"),
+    "llm": ChatOpenAI(model_name="gpt-4o"),
     "rpm": 10000,
 }
 
 claude3 = {
-    "llm": ChatAnthropic(model="claude-3-opus-20240229"),
+    "llm": ChatAnthropic(model="claude-3-opus-20240229", max_tokens=4096),
     "rpm": 1000
 }
+
+gemini = {"llm": ChatGoogleGenerativeAI(model="gemini-1.5-pro-latest"), "rpm": 360}
 
 class AIStoryBookAgents():
     def creative_director(self):
@@ -57,11 +60,11 @@ class AIStoryBookAgents():
                 managing tasks but about inspiring your team to push boundaries and create compelling, engaging stories.
                 """
             ),
-            allow_delegation=False,
+            allow_delegation=True,
             verbose=True,
             max_iter=15,
-            llm=llama3["llm"],
-            max_rpm=llama3["rpm"]
+            llm=gpt4o["llm"],
+            max_rpm=gpt4o["rpm"]
         )
 
     def researcher(self):
@@ -89,8 +92,8 @@ class AIStoryBookAgents():
             tools=[ResearchTool.perform_research],
             verbose=True,
             allow_delegation=False,
-            llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"]
+            llm=gpt4o["llm"],
+            max_rpm=gpt4o["rpm"]
         )
 
     def fantasy_writer(self):
@@ -129,9 +132,9 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
-            llm=llama3["llm"],
-            max_rpm=llama3["rpm"],
+            allow_delegation=True,
+            llm=gpt4o["llm"],
+            max_rpm=gpt4o["rpm"],
         )
 
     def sci_fi_writer(self):
@@ -163,9 +166,9 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
-            llm=llama3["llm"],
-            max_rpm=llama3["rpm"],
+            allow_delegation=True,
+            llm=gpt4o["llm"],
+            max_rpm=gpt4o["rpm"],
         )
 
     def editor(self):
@@ -197,9 +200,9 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
-            llm=llama3["llm"],
-            max_rpm=llama3["rpm"]
+            allow_delegation=True,
+            llm=gpt4o["llm"],
+            max_rpm=gpt4o["rpm"]
         )
 
     def photographer(self):
@@ -231,9 +234,9 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
-            llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"],
+            allow_delegation=True,
+            llm=gpt4o["llm"],
+            max_rpm=gpt4o["rpm"],
             tools=[
                 ImageGenTool.generate_image,
                 CroppingTool.crop_image,
@@ -272,9 +275,9 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
-            llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"],
+            allow_delegation=True,
+            llm=gpt4o["llm"],
+            max_rpm=gpt4o["rpm"],
             tools=[
                 ImageGenTool.generate_image,
                 CroppingTool.crop_image,
@@ -293,9 +296,8 @@ class AIStoryBookAgents():
             ),
             verbose=True,
             allow_delegation=False,
-            llm=gpt4["llm"],
-            max_rpm=gpt4["rpm"],
-            tools=[BundleTool()]
+            llm=gpt4o["llm"],
+            max_rpm=gpt4o["rpm"]
         )
 
     def copywriter(self):
@@ -319,8 +321,8 @@ class AIStoryBookAgents():
             ),
             verbose=True,
             allow_delegation=False,
-            llm=llama3["llm"],
-            max_rpm=llama3["rpm"],
+            llm=gpt4o["llm"],
+            max_rpm=gpt4o["rpm"],
         )
 
     def seo_specialist(self):
@@ -344,8 +346,8 @@ class AIStoryBookAgents():
             ),
             verbose=True,
             allow_delegation=False,
-            llm=llama3["llm"],
-            max_rpm=llama3["rpm"]
+            llm=gpt4o["llm"],
+            max_rpm=gpt4o["rpm"]
         )
 
     def social_media_manager(self):
@@ -369,6 +371,33 @@ class AIStoryBookAgents():
             ),
             verbose=True,
             allow_delegation=False,
-            llm=llama3["llm"],
-            max_rpm=llama3["rpm"],
+            llm=gpt4o["llm"],
+            max_rpm=gpt4o["rpm"],
+        )
+
+    def art_director(self):
+        return Agent(
+            role="ArtDirector",
+            goal=textwrap.dedent(
+                """
+                Lead the visual direction of the project, ensuring that the creative vision is executed across all visual elements 
+                and that the overall aesthetic is cohesive and engaging.
+                """
+            ),
+            backstory=textwrap.dedent(
+                """
+                As an art director, you are the visionary behind the visual elements of the project. You work closely with the creative 
+                director, illustrator, photographer, and web developer to ensure that the visual identity of the project is consistent 
+                and compelling. Your keen eye for design, color, and composition guides the team in creating visuals that resonate with 
+                the target audience and enhance the overall storytelling experience. You are a master of collaboration, bringing together 
+                diverse talents to create a cohesive and visually stunning final product.
+                """
+            ),
+            verbose=True,
+            allow_delegation=False,
+            llm=gpt4o["llm"],
+            max_rpm=gpt4o["rpm"],
+            tools=[
+                FileReadTool(file_path="midjourney-docs.md"),
+            ],
         )

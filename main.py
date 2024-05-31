@@ -33,7 +33,6 @@ researcher = agents.researcher()
 copywriter = agents.copywriter()
 seo_specialist = agents.seo_specialist()
 social_media_manager = agents.social_media_manager()
-art_director = agents.art_director()
 
 product_name = "Potaroma Cat Toys Flapping Bird"
 description = f"""
@@ -47,7 +46,8 @@ develop_creative_brief = tasks.develop_creative_brief(
     creative_director,
     description
 )
-create_seo_brief = tasks.create_seo_brief(seo_specialist, [develop_creative_brief])
+review_creative_brief = tasks.review_creative_brief(seo_specialist, [develop_creative_brief])
+create_seo_brief = tasks.create_seo_brief(seo_specialist, [review_creative_brief])
 develop_social_media_plan = tasks.develop_social_media_plan(
     social_media_manager, 
     [develop_creative_brief, create_seo_brief]
@@ -90,9 +90,7 @@ crew = Crew(
         write_ad_copy,
         write_social_media_posts,
         write_story,
-        convert_to_html,
-        # generate_prompt_from_story,
-        # generate_prompt_from_ad_copy
+        convert_to_html
     ],
     process=Process.hierarchical,
     verbose=2,

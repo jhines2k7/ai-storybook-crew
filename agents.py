@@ -26,7 +26,7 @@ gpt4o = {
 }
 
 claude3 = {
-    "llm": ChatAnthropic(model="claude-3-opus-20240229"),
+    "llm": ChatAnthropic(model="claude-3-opus-20240229", max_tokens=4096),
     "rpm": 1000
 }
 
@@ -60,7 +60,7 @@ class AIStoryBookAgents():
                 managing tasks but about inspiring your team to push boundaries and create compelling, engaging stories.
                 """
             ),
-            allow_delegation=False,
+            allow_delegation=True,
             verbose=True,
             max_iter=15,
             llm=gpt4o["llm"],
@@ -132,7 +132,7 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
+            allow_delegation=True,
             llm=gpt4o["llm"],
             max_rpm=gpt4o["rpm"],
         )
@@ -166,7 +166,7 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
+            allow_delegation=True,
             llm=gpt4o["llm"],
             max_rpm=gpt4o["rpm"],
         )
@@ -200,7 +200,7 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
+            allow_delegation=True,
             llm=gpt4o["llm"],
             max_rpm=gpt4o["rpm"]
         )
@@ -234,7 +234,7 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
+            allow_delegation=True,
             llm=gpt4o["llm"],
             max_rpm=gpt4o["rpm"],
             tools=[
@@ -275,7 +275,7 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
+            allow_delegation=True,
             llm=gpt4o["llm"],
             max_rpm=gpt4o["rpm"],
             tools=[
@@ -396,5 +396,8 @@ class AIStoryBookAgents():
             verbose=True,
             allow_delegation=False,
             llm=gpt4o["llm"],
-            max_rpm=gpt4o["rpm"]
+            max_rpm=gpt4o["rpm"],
+            tools=[
+                FileReadTool(file_path="midjourney-docs.md"),
+            ],
         )

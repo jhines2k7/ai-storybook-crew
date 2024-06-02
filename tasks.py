@@ -4,7 +4,7 @@ from crewai_tools import FileReadTool, DirectoryReadTool
 import textwrap
 
 class AIStoryBookTasks:
-    def develop_creative_brief(self, agent, description):
+    def create_creative_brief(self, agent, description):
         return Task(
             description=textwrap.dedent(
                 description
@@ -26,26 +26,6 @@ class AIStoryBookTasks:
             ),
             agent=agent,
             output_file="output_files/creative_brief.md",
-        )
-
-    def review_creative_brief(self, agent):
-        return Task(
-            description=textwrap.dedent(
-                """
-                Review the creative brief to make sure you understand the project's background, objectives,
-                target audience, key messages, and tone. If you have any questions or need clarification,
-                please reach out to the creative director for further guidance.
-                """
-            ),
-            agent=agent,
-            expected_output=textwrap.dedent(
-                """
-                An affirmation that you have reviewed the creative brief and are ready to proceed with your next task.
-                """
-            ),
-            tools=[
-                FileReadTool(file_path="output_files/creative_brief.md")
-            ]
         )
 
     def write_ad_copy(self, agent, context):
@@ -76,10 +56,7 @@ class AIStoryBookTasks:
                 """
             ),
             async_execution=True,
-            output_file="output_files/ad_copy.txt",
-            tools=[
-                FileReadTool(file_path="output_files/seo_brief.md")
-            ]
+            output_file="output_files/ad_copy.txt"
         )
 
     def write_social_media_posts(self, agent, context):
@@ -104,18 +81,14 @@ class AIStoryBookTasks:
                 """
             ),
             output_file="output_files/social_media_copy.md",
-            async_execution=True,
-            tools=[
-                FileReadTool(file_path="output_files/creative_brief.md"),
-                FileReadTool(file_path="output_files/social_media_plan.md")
-            ]
+            async_execution=True
         )
 
     def write_story(self, agent, context=None):
         return Task(
             description=textwrap.dedent(
                 """
-                Write a short story between 5000 and 6000 words based on the creative brief and the seo brief in the output_files directory.
+                Write a short story between 5000 and 6000 words based on the creative brief and the seo brief.
                 It should feature well-developed characters, a clear setting, and a fully developed plot that unfolds naturally within the constraints of 
                 the short form. Work with the editor to refine the narrative of the story. There is no need to edit the creative brief
                 or the seo brief. It is up to you to decide how to incorporate the information from the briefs into the story. Be creative and
@@ -157,7 +130,7 @@ class AIStoryBookTasks:
         return Task(
             description=textwrap.dedent(
                 """
-                Convert the contents of the story markdown file into an HTML fragment. Be sure to escape any double quotes.
+                Convert the contents of the story into an HTML fragment. Be sure to escape any double quotes.
                 """
             ),
             agent=agent,
@@ -167,68 +140,7 @@ class AIStoryBookTasks:
                 An html fragment on a single line.
                 """
             ),
-            tools=[
-                FileReadTool(file_path="output_files/story.md")
-            ],
             output_file="output_files/story.html"
-        )
-
-    def source_image(self, agent, context):
-        return Task(
-            description=textwrap.dedent(
-                """
-                Read the story to fully understand its themes, characters, and settings to capture 
-                key moments or emotions from the text. Collaborate with the writer and creative director 
-                to ensure alignment with the story's tone and to provide a visual entry point that deepens the 
-                reader's connection to the story. Provide at least 3 different images to choose from. The 
-                images will be dislayed with a vertical orientation. Keep that in mind when composing your images.
-                """
-            ),
-            agent=agent,
-            context=context,
-            expected_output=textwrap.dedent(
-                """
-                A line separated list of the image URLs returned from the image generation tool.
-                Example Output:
-                    https://storage.googleapis.com/blogger-crew-images/Journey_to_Mount_Gaiyara.jpg
-                    https://storage.googleapis.com/blogger-crew-images/Awakening_at_the_Peak.jpg
-                    https://storage.googleapis.com/blogger-crew-images/adventure_forest.jpg
-
-                Do not make any changes to public urls returned from the image generation tool when you add them to the output file.
-                """
-            ),
-            output_file="output_files/image_urls.txt",
-        )
-
-    def crop_images(self, agent, context):
-        return Task(
-            description=textwrap.dedent(
-                """
-                You will be given a list of image URLs in a text 
-                file.
-
-                1. Crop each image to a width of 450px and a height of 1100px  
-                2. Crop each image to a width of 600px and a height of 200px
-                """
-            ),
-            agent=agent,
-            context=context,
-            expected_output=textwrap.dedent(
-                """
-                A line separated list of image URLs returned from the cropping tool
-                Example Output:
-                    https://storage.googleapis.com/blogger-crew-images/cropped/Ancient_City_of_Tenria-450x1100.jpg
-                    https://storage.googleapis.com/blogger-crew-images/cropped/Ancient_City_of_Tenria-600x200.jpg
-                    https://storage.googleapis.com/blogger-crew-images/cropped/Awakening_at_the_Peak-450x1100.jpg
-                    https://storage.googleapis.com/blogger-crew-images/cropped/Awakening_at_the_Peak-600x200.jpg
-
-                Do not make any changes to public urls returned from the cropping tool when you add them to the output file.
-                """
-            ),
-            output_file="output_files/cropped_image_urls.txt",
-            tools=[
-                FileReadTool(file_path="output_files/image_urls.txt")
-            ]
         )
 
     def create_seo_brief(self, agent, context):
@@ -267,31 +179,11 @@ class AIStoryBookTasks:
             ],
         )
 
-    def review_seo_brief(self, agent):
+    def create_social_media_plan(self, agent, context=None):
         return Task(
             description=textwrap.dedent(
                 """
-                Review the SEO brief to ensure you understand the targeted keywords, content recommendations, and backlink strategies. 
-                If you have any questions or need clarification, please reach out to the SEO specialist for further guidance.
-                """
-            ),
-            agent=agent,
-            expected_output=textwrap.dedent(
-                """
-                An affirmation that you have reviewed the SEO brief and are ready to proceed with your next task.
-                """
-            ),
-            tools=[
-                FileReadTool(file_path="output_files/seo_brief.md")
-            ]
-        )
-
-    def develop_social_media_plan(self, agent, context=None):
-        return Task(
-            # Plan the promotion of content on X, Instagram, and Facebook. Collaborate with the creative team to ensure consistency across platforms.
-            description=textwrap.dedent(
-                """
-                Plan the promotion of content on X, Instagram, and Facebook.
+                Plan the promotion of content on X, Instagram, and Facebook. Collaborate with the creative team to ensure consistency across platforms.
                 """
             ),
             agent=agent,
@@ -313,8 +205,7 @@ class AIStoryBookTasks:
                 """
             ),
             async_execution=False,
-            output_file="output_files/social_media_plan.md",
-            tools=[FileReadTool(file_path="output_files/creative_brief.md")]
+            output_file="output_files/social_media_plan.md"
         )
 
     
@@ -322,8 +213,9 @@ class AIStoryBookTasks:
         return Task(
             description=textwrap.dedent(
                 """
-                Read the ad copy to fully understand the product, target audience, and key messages. Collaborate with the copywriter and creative director 
-                to ensure alignment with the campaign's objectives and tone. Use the information in the creative brief to generate a prompt that captures the essence 
+                Read the ad copy to fully understand the product, target audience, and key messages. 
+                Collaborate with the copywriter and creative director to ensure alignment with the campaign's 
+                objectives and tone. Use the information in the creative brief to generate a prompt that captures the essence 
                 of the ad copy and encourages the reader to take action. The choice of style is up to you.
                 """
             ),
@@ -335,11 +227,6 @@ class AIStoryBookTasks:
                 """
             ),
             output_file="output_files/midjourney_ad_copy_prompt.txt",
-            tools=[
-                FileReadTool(file_path="output_files/ad_copy.txt"),
-                FileReadTool(file_path="output_files/creative_brief.md"),
-                FileReadTool(file_path="midjourney_docs.md")
-            ],
             llm_config={
                 "temperature": 0.9,  # High creativity
                 "top_p": 0.9,  # Nucleus sampling
@@ -347,6 +234,7 @@ class AIStoryBookTasks:
                 "presence_penalty": 0.6,  # Encourage new topics
             }
         )
+        
     def generate_prompt_from_story(self, agent, context=None, aspect_ratio="9:22"):
         return Task(
             description=textwrap.dedent(
@@ -370,6 +258,5 @@ class AIStoryBookTasks:
                 A midjourney prompt that captures the essence of the story and engages the reader's curiosity
                 """
             ),
-            output_file="output_files/midjourney_story_prompt.txt",
-            tools=[FileReadTool(file_path="output_files/story.md")],
+            output_file="output_files/midjourney_story_prompt.txt"
         )

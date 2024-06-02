@@ -6,7 +6,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 from tools.image_gen_tool import ImageGenTool
 from tools.cropping_tool import CroppingTool
-from crewai_tools import FileReadTool
+from crewai_tools import FileReadTool, DirectoryReadTool
 
 import textwrap
 
@@ -60,11 +60,11 @@ class AIStoryBookAgents():
                 managing tasks but about inspiring your team to push boundaries and create compelling, engaging stories.
                 """
             ),
-            allow_delegation=True,
+            allow_delegation=False,
             verbose=True,
             max_iter=15,
-            llm=gpt4o["llm"],
-            max_rpm=gpt4o["rpm"]
+            llm=gemini["llm"],
+            max_rpm=gemini["rpm"]
         )
 
     def researcher(self):
@@ -92,8 +92,8 @@ class AIStoryBookAgents():
             tools=[ResearchTool.perform_research],
             verbose=True,
             allow_delegation=False,
-            llm=gpt4o["llm"],
-            max_rpm=gpt4o["rpm"]
+            llm=gemini["llm"],
+            max_rpm=gemini["rpm"]
         )
 
     def fantasy_writer(self):
@@ -132,9 +132,9 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=True,
-            llm=gpt4o["llm"],
-            max_rpm=gpt4o["rpm"],
+            llm=gemini["llm"],
+            max_rpm=gemini["rpm"],
+            tools=[DirectoryReadTool("output_files")]
         )
 
     def sci_fi_writer(self):
@@ -166,9 +166,9 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=True,
-            llm=gpt4o["llm"],
-            max_rpm=gpt4o["rpm"],
+            llm=gemini["llm"],
+            max_rpm=gemini["rpm"],
+            tools=[DirectoryReadTool("output_files")]
         )
 
     def editor(self):
@@ -200,88 +200,9 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=True,
-            llm=gpt4o["llm"],
-            max_rpm=gpt4o["rpm"]
-        )
-
-    def photographer(self):
-        return Agent(
-            role="Photographer",
-            goal=textwrap.dedent(
-                """
-                Visually translate the narrative, capturing emotions and engaging the audience through compelling 
-                imagery that enhances the storytelling experience.
-                """
-            ),
-            backstory=textwrap.dedent(
-                """
-                You are an artist capturing moments frozen in time, weaving stories through the click of a shutter. 
-                Your keen eye dances across the scene, framing each element with precision, finding beauty in the 
-                mundane and magic in the ordinary. You're not just an observer; you're a conductor orchestrating light, 
-                composition, and emotion to create visual symphonies that stir the soul. With each snap, you etch your 
-                vision onto film or sensor, preserving memories, evoking emotions, and leaving a trail of artistry in 
-                your wake. You are the photographer, a silent storyteller in a world of fleeting moments.
-                
-                When crafting your prompts, you are sure to always use the following strategies:
-                1. Use Specific Photographic Terms: Use terms like "digital photograph," "golden hour," and "DSLR photo," along with a specific lens type "Sigma 85 mm f/1.4"
-                
-                2. Give Detailed Descriptions: The prompt should provide a detailed description of the scene, including lighting conditions, composition, and mood
-
-                3. Emulate Reality and Medium: Emulate both the reality of the scene and the medium of photography by specifying the time of day, lighting conditions, and the effect of the lens on the image
-
-                4. Avoid Ambiguity: Avoid ambiguity by being specific about the scene's elements, their arrangement, and the desired photographic effects
-                """
-            ),
-            verbose=True,
-            allow_delegation=True,
-            llm=gpt4o["llm"],
-            max_rpm=gpt4o["rpm"],
-            tools=[
-                ImageGenTool.generate_image,
-                CroppingTool.crop_image,
-            ],
-        )
-
-    def illustrator(self):
-        return Agent(
-            role="Illustrator",
-            goal=textwrap.dedent(
-                """
-                 Bring the narrative to life visually, translating the written word into compelling images that capture the 
-                 essence of the story.
-                """
-            ),
-            backstory=textwrap.dedent(
-                """
-                As an illustrator in a team of creatives, you find yourself in a vibrant, collaborative atmosphere, surrounded by 
-                fellow artists, writers, and designers, each buzzing with ideas for the new short story project. Your workspace is a 
-                lively blend of scattered art supplies, storyboards, and digital tablets.
-
-                You begin by sketching out character concepts, drawing from the detailed descriptions provided by the writers. Each 
-                stroke of your pencil adds depth to the characters, making them more than just figures—they're personalities with 
-                emotions and backstories. The feedback from your teammates is immediate and constructive, helping you refine your 
-                designs to better align with the story's tone.
-
-                As the project progresses, you move your sketches to digital format, using a drawing tablet to color and texture 
-                your creations. The room is often filled with discussions about color schemes, visual metaphors, and layout 
-                compositions, ensuring every element is cohesive and supports the story's theme.
-
-                Your role is crucial yet creatively fulfilling, as you navigate through tight deadlines and multiple revisions. 
-                With each collaborative meeting, you and your team synchronize your visions, ensuring that the text and visuals 
-                seamlessly merge to create an engaging and memorable short story. Your work not only brings the narrative to visual 
-                life but also enhances the reader's experience, making the characters leap off the page right into the reader's 
-                imagination.        
-                """
-            ),
-            verbose=True,
-            allow_delegation=True,
-            llm=gpt4o["llm"],
-            max_rpm=gpt4o["rpm"],
-            tools=[
-                ImageGenTool.generate_image,
-                CroppingTool.crop_image,
-            ]
+            llm=gemini["llm"],
+            max_rpm=gemini["rpm"],
+            tools=[DirectoryReadTool("output_files")]
         )
 
     def web_developer(self):
@@ -296,8 +217,9 @@ class AIStoryBookAgents():
             ),
             verbose=True,
             allow_delegation=False,
-            llm=gpt4o["llm"],
-            max_rpm=gpt4o["rpm"]
+            llm=gemini["llm"],
+            max_rpm=gemini["rpm"],
+            tools=[DirectoryReadTool("output_files")]
         )
 
     def copywriter(self):
@@ -320,9 +242,9 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
-            llm=gpt4o["llm"],
-            max_rpm=gpt4o["rpm"],
+            llm=gemini["llm"],
+            max_rpm=gemini["rpm"],
+            tools=[DirectoryReadTool("output_files")]
         )
 
     def seo_specialist(self):
@@ -345,9 +267,9 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
-            llm=gpt4o["llm"],
-            max_rpm=gpt4o["rpm"]
+            llm=gemini["llm"],
+            max_rpm=gemini["rpm"],
+            tools=[DirectoryReadTool("output_files")]
         )
 
     def social_media_manager(self):
@@ -370,9 +292,9 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
-            llm=gpt4o["llm"],
-            max_rpm=gpt4o["rpm"],
+            llm=gemini["llm"],
+            max_rpm=gemini["rpm"],
+            tools=[DirectoryReadTool("output_files")]
         )
 
     def art_director(self):
@@ -394,10 +316,10 @@ class AIStoryBookAgents():
                 """
             ),
             verbose=True,
-            allow_delegation=False,
-            llm=gpt4o["llm"],
-            max_rpm=gpt4o["rpm"],
+            llm=gemini["llm"],
+            max_rpm=gemini["rpm"],
             tools=[
                 FileReadTool(file_path="midjourney-docs.md"),
-            ],
+                DirectoryReadTool("output_files")
+            ]
         )
